@@ -4,7 +4,7 @@ import { TaskPage } from "../task";
 
 export const AppRouter = () => {
 
-  const authStatus = 'not-authenticated';
+  const authStatus = 'authenticated';
 
   return (
     <Routes>
