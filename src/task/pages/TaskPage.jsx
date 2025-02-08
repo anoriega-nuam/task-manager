@@ -13,7 +13,8 @@ export const TaskPage = () => {
   // const [searchTerm, setSearchTerm] = useState('');
   const [tasks, setTasks] = useState(initialTasks);
   const [filteredTasks, setFilteredTasks] = useState(tasks);
-  console.log("description", "newTaskDescription");
+  const [editingTask, setEditingTask] = useState(null);
+  const [newDescription, setNewDescription] = useState('');
 
   const onAddTask = (description) => {
     if (description === '') return;
@@ -38,6 +39,28 @@ export const TaskPage = () => {
     setTasks(updatedTasks);
     setFilteredTasks(updatedTasks);
   };
+
+  const onDeleteTask = (taskId) => {
+    const updatedTasks = tasks.filter(task => task.id !== taskId);
+    setTasks(updatedTasks);
+    setFilteredTasks(updatedTasks);
+  };
+
+  const onStartEditing = (task) => {
+    setEditingTask(task.id);
+    setNewDescription(task.description);
+  };
+
+  const onSaveTask = (taskId) => {
+    const updatedTasks = tasks.map(task =>
+      task.id === taskId ? { ...task, description: newDescription } : task
+    );
+    setTasks(updatedTasks);
+    setFilteredTasks(updatedTasks);
+    setEditingTask(null);
+    setNewDescription('');
+  };
+
 
   return (
     <>
@@ -66,13 +89,48 @@ export const TaskPage = () => {
             {filteredTasks.map((task, index) => (
               <tr key={task.id}>
                 <th scope="row">{index + 1}</th>
-                <td>{task.description}</td>
+                <td>
+                  {editingTask === task.id ? (
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={newDescription}
+                      onChange={(e) => setNewDescription(e.target.value)}
+                    />
+                  ) : (
+                    task.description
+                  )}
+                </td>
                 <td>
                   <input
                     type="checkbox"
                     checked={task.completed}
                     onChange={() => toggleTaskCompletion(task.id)}
                   />
+                </td>
+                <td>
+                {editingTask === task.id ? (
+                    <button
+                      className="btn btn-success btn-sm"
+                      onClick={() => onSaveTask(task.id)}
+                    >
+                      <i className="bi bi-save"></i> Guardar
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() => onStartEditing(task)}
+                    >
+                      <i className="bi bi-pencil"></i> Editar
+                    </button>
+                  )}
+
+                  <button
+                    className="btn btn-danger btn-sm mx-2"
+                    onClick={() => onDeleteTask(task.id)}
+                  >
+                    <i className="bi bi-trash"></i>
+                  </button>
                 </td>
               </tr>
             ))}
