@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Navbar } from "../components/Navbar";
 import { AddTask } from './Components/AddTask';
+import { SearchTask } from './Components/SearchTask';
 
 const initialTasks = [
   { id: 1, description: 'Tarea 1', completed: false },
@@ -9,13 +10,10 @@ const initialTasks = [
 ];
 
 export const TaskPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  // const [searchTerm, setSearchTerm] = useState('');
   const [tasks, setTasks] = useState(initialTasks);
+  const [filteredTasks, setFilteredTasks] = useState(tasks);
   console.log("description", "newTaskDescription");
-
-  const filteredTasks = tasks.filter(task =>
-    task.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const onAddTask = (description) => {
     if (description === '') return;
@@ -39,15 +37,10 @@ export const TaskPage = () => {
           addTask={onAddTask}
         />
 
-        <div className="mb-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Buscar tareas..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        <SearchTask
+          tasks={tasks}
+          setFilteredTasks={setFilteredTasks}
+        />
 
         <table className="table table-striped">
           <thead>

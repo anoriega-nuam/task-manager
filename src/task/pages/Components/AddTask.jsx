@@ -3,6 +3,7 @@ import { useState } from "react";
 export const AddTask = ({addTask}) => {
   const [newTaskDescription, setNewTaskDescription] = useState('');
 
+  console.log("AddTask");
 
   const onHandleSubmit = (e) => {
     e.preventDefault();
