@@ -8,6 +8,7 @@ export const SearchTask = ({tasks, setFilteredTasks}) => {
     const filteredTasks = tasks.filter(task =>
       task.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    console.log("searchTerm", tasks);
     console.log("filteredTasks", filteredTasks);
 
     setSearchTerm(searchTerm);

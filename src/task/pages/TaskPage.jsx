@@ -25,6 +25,18 @@ export const TaskPage = () => {
     };
 
     setTasks([...tasks, newTask]);
+    setFilteredTasks([...tasks, newTask]);
+
+  };
+
+  const toggleTaskCompletion = (taskId) => {
+    const updatedTasks = tasks.map(task =>
+      task.id === taskId
+        ? { ...task, completed: !task.completed }
+        : task
+    );
+    setTasks(updatedTasks);
+    setFilteredTasks(updatedTasks);
   };
 
   return (
@@ -34,7 +46,7 @@ export const TaskPage = () => {
         <h2>Lista de Tareas</h2>
 
         <AddTask
-          addTask={onAddTask}
+          onAddTask={onAddTask}
         />
 
         <SearchTask
@@ -55,7 +67,13 @@ export const TaskPage = () => {
               <tr key={task.id}>
                 <th scope="row">{index + 1}</th>
                 <td>{task.description}</td>
-                <td>{task.completed ? 'Sí' : 'No'}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => toggleTaskCompletion(task.id)}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
