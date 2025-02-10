@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { TaskContext } from "../../context/TaskContext";
 
-export const AddTask = ({onAddTask}) => {
+export const AddTask = () => {
   const [newTaskDescription, setNewTaskDescription] = useState('');
 
-  console.log("AddTask");
+    const {addTask} = useContext(TaskContext)
+
 
   const onHandleSubmit = (e) => {
     e.preventDefault();
-    onAddTask(newTaskDescription);
+
+    addTask(newTaskDescription);
     setNewTaskDescription('');
   }
 

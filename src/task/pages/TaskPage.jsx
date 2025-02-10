@@ -1,50 +1,20 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Navbar } from "../components/Navbar";
 import { AddTask } from './Components/AddTask';
 import { SearchTask } from './Components/SearchTask';
-
-const initialTasks = [
-  { id: 1, description: 'Tarea 1', completed: false },
-  { id: 2, description: 'Tarea 2', completed: true },
-  { id: 3, description: 'Tarea 3', completed: false },
-];
+import { TaskContext } from '../context/TaskContext';
 
 export const TaskPage = () => {
-  // const [searchTerm, setSearchTerm] = useState('');
-  const [tasks, setTasks] = useState(initialTasks);
-  const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const {taskState, deleteTask, editTask, toggleTask} = useContext(TaskContext)
+
+  const [filteredTasks, setFilteredTasks] = useState(taskState.tasks);
   const [editingTask, setEditingTask] = useState(null);
   const [newDescription, setNewDescription] = useState('');
 
-  const onAddTask = (description) => {
-    if (description === '') return;
 
-    const newTask = {
-      id: tasks.length + 1,
-      description,
-      completed: false,
-    };
-
-    setTasks([...tasks, newTask]);
-    setFilteredTasks([...tasks, newTask]);
-
-  };
-
-  const toggleTaskCompletion = (taskId) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === taskId
-        ? { ...task, completed: !task.completed }
-        : task
-    );
-    setTasks(updatedTasks);
-    setFilteredTasks(updatedTasks);
-  };
-
-  const onDeleteTask = (taskId) => {
-    const updatedTasks = tasks.filter(task => task.id !== taskId);
-    setTasks(updatedTasks);
-    setFilteredTasks(updatedTasks);
-  };
+  useEffect(() => {
+    setFilteredTasks(taskState.filteredTasks.length ? taskState.filteredTasks : taskState.tasks);
+  }, [taskState.filteredTasks, taskState.tasks]);
 
   const onStartEditing = (task) => {
     setEditingTask(task.id);
@@ -52,11 +22,12 @@ export const TaskPage = () => {
   };
 
   const onSaveTask = (taskId) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === taskId ? { ...task, description: newDescription } : task
-    );
-    setTasks(updatedTasks);
-    setFilteredTasks(updatedTasks);
+    const dataEditing = {
+      id: taskId,
+      description: newDescription
+    }
+    editTask(dataEditing);
+
     setEditingTask(null);
     setNewDescription('');
   };
@@ -68,12 +39,10 @@ export const TaskPage = () => {
       <div className="container mt-5">
         <h2>Lista de Tareas</h2>
 
-        <AddTask
-          onAddTask={onAddTask}
-        />
+        <AddTask />
 
         <SearchTask
-          tasks={tasks}
+          tasks={taskState.tasks}
           setFilteredTasks={setFilteredTasks}
         />
 
@@ -105,7 +74,7 @@ export const TaskPage = () => {
                   <input
                     type="checkbox"
                     checked={task.completed}
-                    onChange={() => toggleTaskCompletion(task.id)}
+                    onChange={() => toggleTask(task.id)}
                   />
                 </td>
                 <td>
@@ -127,7 +96,7 @@ export const TaskPage = () => {
 
                   <button
                     className="btn btn-danger btn-sm mx-2"
-                    onClick={() => onDeleteTask(task.id)}
+                    onClick={() => deleteTask(task.id)}
                   >
                     <i className="bi bi-trash"></i>
                   </button>
